@@ -110,7 +110,7 @@ TODO:
 - Implement input-validation
 - Automate customer entry via loops
 
-Note on time variable:
+Note on time data-point:
 - Store will be open from 8am to 8pm. -> That is 12 hours, which is 43200 seconds
 - All time will be kept track of in seconds.
 - Seconds can be converted back into readable time for GUI
