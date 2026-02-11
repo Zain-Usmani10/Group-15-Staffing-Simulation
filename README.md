@@ -1,4 +1,4 @@
-# Grocery Store Staffing Simulation - Program 1 (Prototype)
+# Customer Class + JSON Output (Prototype)
 
 **Status:** Proof-of-concept for JSON output serialization using the `Customer` class. 
 
@@ -51,3 +51,10 @@ The simulation covers a 12-hour store window (8:00 AM to 8:00 PM).
 
 ## Sample Assets
 A sample `customers.json` is included in the repository for format verification.
+A sample `customers.json` is included in the repository for reference. Below are some pictures of the output:
+
+### Terminal Interface
+![Terminal Screenshot](images/terminal.png)
+
+### Generated JSON File
+![JSON Screenshot](images/json_output.png)
