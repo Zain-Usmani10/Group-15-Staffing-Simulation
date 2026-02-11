@@ -1,4 +1,4 @@
-# Grocery Store Staffing Simulation - Program 1 (Prototype)
+# Customer Class Implementation + JSON Output (Prototype)
 
 **Status:** Proof-of-concept for JSON output serialization using the `Customer` class. 
 
@@ -28,6 +28,7 @@ cmake --build build
 
 # On Linux/macOS:
 ./build/group-15-staffing-simulation
+```
 
 ## Current Implementation Details
 The program currently demonstrates:
@@ -48,5 +49,11 @@ The simulation covers a 12-hour store window (8:00 AM to 8:00 PM).
 * **Internal Representation:** All time is tracked as an integer (seconds) to simplify simulation math.
 * **UI/UX:** Conversion logic for readable time (HH:MM:SS) will be handled in the final GUI layer.
 
-## Sample Assets
-A sample `customers.json` is included in the repository for format verification.
+## Sample Output
+A sample `customers.json` is included in the repository for reference as well as pictures under images/.
+
+### Terminal Interface
+![Terminal Screenshot](images/terminal.png)
+
+### Generated JSON File
+![JSON Screenshot](images/json_output.png)
