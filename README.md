@@ -1,4 +1,4 @@
-# Grocery Store Staffing Simulation - Program 1 (Prototype)
+# Customer Class + JSON Output (Prototype)
 
 **Status:** Proof-of-concept for JSON output serialization using the `Customer` class. 
 
