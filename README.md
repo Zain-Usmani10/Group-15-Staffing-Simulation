@@ -28,6 +28,7 @@ cmake --build build
 
 # On Linux/macOS:
 ./build/group-15-staffing-simulation
+```
 
 ## Current Implementation Details
 The program currently demonstrates:
