@@ -1,4 +1,4 @@
-# Customer Class Implementation + JSON Output (Prototype)
+# Customer Class + JSON Output (Prototype)
 
 **Status:** Proof-of-concept for JSON output serialization using the `Customer` class. 
 
@@ -49,8 +49,8 @@ The simulation covers a 12-hour store window (8:00 AM to 8:00 PM).
 * **Internal Representation:** All time is tracked as an integer (seconds) to simplify simulation math.
 * **UI/UX:** Conversion logic for readable time (HH:MM:SS) will be handled in the final GUI layer.
 
-## Sample Output
-A sample `customers.json` is included in the repository for reference as well as pictures under images/.
+## Sample Assets
+A sample `customers.json` is included in the repository for reference. Below are some pictures of the output:
 
 ### Terminal Interface
 ![Terminal Screenshot](images/terminal.png)
