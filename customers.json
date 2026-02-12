@@ -1,12 +1,23 @@
 [
   {
     "ID": 1000,
-    "item_count": 67,
-    "payment_method": "CARD"
+    "arrival_time": 37260,
+    "arrival_time_string": "6:21 PM",
+    "item_count": 21,
+    "payment_method": "CASH"
   },
   {
     "ID": 1001,
-    "item_count": 21,
-    "payment_method": "CASH"
+    "arrival_time": 3600,
+    "arrival_time_string": "9:00 AM",
+    "item_count": 5,
+    "payment_method": "CHEQUE"
+  },
+  {
+    "ID": 1002,
+    "arrival_time": 25740,
+    "arrival_time_string": "3:09 PM",
+    "item_count": 9,
+    "payment_method": "CARD"
   }
 ]

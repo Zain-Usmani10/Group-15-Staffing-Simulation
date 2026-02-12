@@ -2,8 +2,11 @@
 #include <string>
 #include <vector>
 #include <cctype>
-#include <fstream>
-#include <nlohmann/json.hpp>
+#include <fstream> // file output
+#include <sstream> // for time string parsing
+#include <iomanip> // for understanding time string
+#include <ctime> // tm function
+#include <nlohmann/json.hpp> // JSON file type
 
 using namespace std;
 using json = nlohmann::json;
@@ -14,88 +17,145 @@ class Customer {
     public: enum class paymentMethod {CARD, CHEQUE, CASH};
 
     private:
+
+    // The data that will be outputted in 'customer.json' for each customer
         unsigned int id;
+        unsigned int arrival_time;
         int item_count;
+        string arrival_time_string;
         paymentMethod payment_method;
 
     public:
-    Customer (unsigned int i, int itemCount, paymentMethod m) : id(i), item_count(itemCount), payment_method(m) {}
-    unsigned int getID() {
-        return id;
-    }
-    int getItemCount() {
-        return item_count;
-    }
-    paymentMethod getPaymentMethod() {
-        return payment_method;
-    }
-    string getMethodString() {
-        switch (payment_method) {
-            case paymentMethod::CARD:   return "CARD";
-            case paymentMethod::CHEQUE: return "CHEQUE";
-            case paymentMethod::CASH:   return "CASH";
-            default:                    return "NONE";
-        }
-    }
+        Customer (unsigned int i, int itemCount, paymentMethod m, unsigned int at, string ats) :
+        id(i), item_count(itemCount), payment_method(m), arrival_time(at), arrival_time_string(ats)
+        {}
 
-    json to_json() {
-        json j;
-        j["ID"] = id;
-        j["item_count"] = item_count;
-        j["payment_method"] = getMethodString();
-        return j;
-    }
+        unsigned int getID() {
+            return id;
+        }
+        int getItemCount() {
+            return item_count;
+        }
+        string getMethodString() {
+            switch (payment_method) {
+                case paymentMethod::CARD:   return "CARD";
+                case paymentMethod::CHEQUE: return "CHEQUE";
+                case paymentMethod::CASH:   return "CASH";
+                default:                    return "NONE";
+            }
+        }
+        string getTimeString() {
+            return arrival_time_string;
+        }
+        unsigned int getTime () {
+            return arrival_time;
+        }
+
+        json to_json() {
+            json j;
+            j["ID"] = id;
+            j["arrival_time_string"] = arrival_time_string;
+            j["payment_method"] = getMethodString();
+            j["item_count"] = item_count;
+            j["arrival_time"] = arrival_time;
+            return j;
+        }
 };
 
+// Parses user input to flag for errors or validation.
+// The outputted flag is used as feedback to call function again in case of invalid inputs.
+int isValidTime(const string& input, tm& time) {
+    std::istringstream stream (input);
+    stream >> std::get_time(&time, "%I:%M %p");
+
+    if (stream.fail()) return -1; // means invalid time
+    if (time.tm_hour < 8 || time.tm_hour > 19 || time.tm_min < 0 || time.tm_min > 59) return -2; // store closed
+
+    return 0;
+}
+
+// converts the std::tm struct "time" into seconds with basic arithmetic
+unsigned int convertToSeconds(tm &time) {
+    unsigned int seconds;
+    seconds = time.tm_hour*3600 + time.tm_min*60 - 28800; // 28600 is 8:00 AM is seconds if we start counting from midnight
+    return seconds;
+}
+
+// Global function to prompt user to enter a time as a string.
+// It then parses the preceding isValidTime function to validate input.
+// Finally, the preceding convertToSeconds function converts it to a useful format used for sorting and later calculations
+void inputTime (unsigned int &arrival_time, string &t) {
+    tm time {};
+    cout << "Time of arrival [HH:MM AM/PM]. Example: '08:30 AM': ";
+    while (true) {
+        getline(cin, t);
+        int flag = isValidTime(t, time);
+        if (flag == 0) {
+            arrival_time = convertToSeconds(time);
+            return;
+        }
+        else if (flag == -1) cout << "Invalid format, please try again. ";
+        else if (flag == -2) cout << "Sorry, store is closed! Store hours are 8:00 AM - 8:00 PM. ";
+        else cout << "Input not recognized, please try again. ";
+    }
+}
+
 int main() {
-    int i1, i2;
-    string c1, c2;
-    Customer::paymentMethod C1, C2;
-
-    cout << "Please enter the number of item of the first customer: ";
-    cin >> i1;
-    cout << "Please enter the payment method (CARD, CHEQUE, or CASH) of the first customer: ";
-    while (true) {
-        cin >> c1;
-        for (int i = 0; i < c1.length(); i++) {
-            c1[i] = toupper(c1[i]);
-        }
-        if (c1 == "CARD")       {C1 = Customer::paymentMethod::CARD;     break; }
-        if (c1 == "CHEQUE")     {C1 = Customer::paymentMethod::CHEQUE;   break; }
-        if (c1 == "CASH")       {C1 = Customer::paymentMethod::CASH;     break; }
-        cout << "Incorrect! Please try again (CARD, CHEQUE, or CASH): "; 
-    }
-
-    cout << "Please enter the number of item of the second customer: ";
-    cin >> i2;
-    cout << "Please enter the payment method (CARD, CHEQUE, or CASH) of the second customer: ";
-    while (true) {
-        cin >> c2;
-        for (int i = 0; i < c2.length(); i++) {
-            c2[i] = toupper(c2[i]);
-        }
-        if (c2 == "CARD")       {C2 = Customer::paymentMethod::CARD;     break; }
-        if (c2 == "CHEQUE")     {C2 = Customer::paymentMethod::CHEQUE;   break; }
-        if (c2 == "CASH")       {C2 = Customer::paymentMethod::CASH;     break; }
-        cout << "Incorrect! Please try again (CARD, CHEQUE, or CASH): "; 
-    }
+    int number_of_items;
+    unsigned int time_of_arrival;
+    string time_of_arrival_string;
+    string payment_method_string;
+    Customer::paymentMethod method_of_payment;
 
     vector<Customer> customerList;
-    customerList.push_back(Customer(customerID++, i1, C1));
-    customerList.push_back(Customer(customerID++, i2, C2));
+    char mode;
+    bool run = true;
 
-    cout << "\nCustomer 1:\tID - " << customerList[0].getID() << "\t# of items - " << customerList[0].getItemCount() << "    \tPayment Method - " << customerList[0].getMethodString() << endl;
-    cout << "Customer 2:\tID - " << customerList[1].getID() << "\t# of items - " << customerList[1].getItemCount() << "    \tPayment Method - " << customerList[1].getMethodString() << endl;
+    // Enter customers until user chooses not to.
+    while (run) {
+        cout << "To enter a customer, press 1. Otherwise, press any key to exit and recieve JSON file: ";
+        cin >> mode;
+        cin.ignore(1000, '\n');
+
+        switch (mode) {     
+            case '1': {
+                cout << "\nCustomer " << customerID - 999 << ":" << endl;
+                inputTime(time_of_arrival, time_of_arrival_string);
+                cout << "Number of items: ";
+                cin >> number_of_items;
+                cout << "Payment method (CARD, CHEQUE, or CASH): ";
+                while (true) {
+                    cin >> payment_method_string;
+                    for (int i = 0; i < payment_method_string.length(); i++) {
+                        payment_method_string[i] = toupper(payment_method_string[i]);
+                    }
+                    if (payment_method_string == "CARD")       {method_of_payment = Customer::paymentMethod::CARD;     break; }
+                    if (payment_method_string == "CHEQUE")     {method_of_payment = Customer::paymentMethod::CHEQUE;   break; }
+                    if (payment_method_string == "CASH")       {method_of_payment = Customer::paymentMethod::CASH;     break; }
+                    cout << "Incorrect! Please try again (CARD, CHEQUE, or CASH): "; 
+                }
+                customerList.push_back(Customer(customerID++, number_of_items, method_of_payment,time_of_arrival, time_of_arrival_string));
+                break;
+            }
+            default: {
+                run = false;
+                break;
+            }
+        }
+    }
+
+    int size = customerList.size();
+    
 
     json list = json::array();
-    list.push_back(customerList[0].to_json());
-    list.push_back(customerList[1].to_json());
-
+    for (int i=0; i < size; i++) {
+        list.push_back(customerList[i].to_json());
+    }
     ofstream file("customers.json");
     file << list.dump(2);
     file.close();
-
-    cout << "\nJSON file ""customer.json"" generated successfully!!!\n" << endl;
+    
+    cout << "\nTotal number of customers: " << size << "\nJSON file ""customer.json"" generated successfully!!!" << endl;
 
     return 0;
 }
@@ -105,10 +165,11 @@ int main() {
 Personal Notes:
 
 TODO:
-- Add time data-point in Customer class that describes what time customer entered the queue (in seconds)
+- Add time data-point in Customer class that describes what time customer entered the queue (in seconds) DONE
+- Implement input-validation - DONE
+- Automate customer entry via loops - DONE
+OUTSTANDING:
 - Implement some type of sort algorithm to sort customers by time of arrival
-- Implement input-validation
-- Automate customer entry via loops
 
 Note on time data-point:
 - Store will be open from 8am to 8pm. -> That is 12 hours, which is 43200 seconds
@@ -116,3 +177,5 @@ Note on time data-point:
 - Seconds can be converted back into readable time for GUI
 
 */
+
+// cout << "\nCustomer 1:\tID - " << customerList[0].getID() << "\t# of items - " << customerList[0].getItemCount() << "    \tPayment Method - " << customerList[0].getMethodString() << endl;
