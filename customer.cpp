@@ -144,9 +144,9 @@ int main() {
         }
     }
 
+    
     int size = customerList.size();
     
-
     json list = json::array();
     for (int i=0; i < size; i++) {
         list.push_back(customerList[i].to_json());
