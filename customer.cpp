@@ -5,7 +5,7 @@
 #include <fstream> // file output
 #include <sstream> // for time string parsing
 #include <iomanip> // for understanding time string
-#include <ctime> // tm function
+#include <ctime> // tm struct for time handling
 #include <nlohmann/json.hpp> // JSON file type
 
 using namespace std;
@@ -13,6 +13,7 @@ using json = nlohmann::json;
 
 unsigned int customerID = 1000;
 
+// Customer class to store all data for each customer
 class Customer {
     public: enum class paymentMethod {CARD, CHEQUE, CASH};
 
@@ -25,6 +26,7 @@ class Customer {
         string arrival_time_string;
         paymentMethod payment_method;
 
+    // Constructor and getter functions
     public:
         Customer (unsigned int i, int itemCount, paymentMethod m, unsigned int at, string ats) :
         id(i), item_count(itemCount), payment_method(m), arrival_time(at), arrival_time_string(ats)
@@ -51,6 +53,7 @@ class Customer {
             return arrival_time;
         }
 
+        // json formatter function
         json to_json() {
             json j;
             j["ID"] = id;
@@ -101,6 +104,7 @@ void inputTime (unsigned int &arrival_time, string &t) {
 }
 
 int main() {
+    // Variables for std::cin to be pushed into customer objects
     int number_of_items;
     unsigned int time_of_arrival;
     string time_of_arrival_string;
@@ -119,6 +123,7 @@ int main() {
 
         switch (mode) {     
             case '1': {
+                // User presses 1 and is prompted to enter arrival time, number of items, and payment method.
                 cout << "\nCustomer " << customerID - 999 << ":" << endl;
                 inputTime(time_of_arrival, time_of_arrival_string);
                 cout << "Number of items: ";
@@ -126,9 +131,7 @@ int main() {
                 cout << "Payment method (CARD, CHEQUE, or CASH): ";
                 while (true) {
                     cin >> payment_method_string;
-                    for (int i = 0; i < payment_method_string.length(); i++) {
-                        payment_method_string[i] = toupper(payment_method_string[i]);
-                    }
+                    for (size_t i = 0; i < payment_method_string.length(); i++) payment_method_string[i] = toupper(payment_method_string[i]); // Converting all entered characters to upper case for if else comparison. This makes the entry 'case insensitive'
                     if (payment_method_string == "CARD")       {method_of_payment = Customer::paymentMethod::CARD;     break; }
                     if (payment_method_string == "CHEQUE")     {method_of_payment = Customer::paymentMethod::CHEQUE;   break; }
                     if (payment_method_string == "CASH")       {method_of_payment = Customer::paymentMethod::CASH;     break; }
@@ -137,6 +140,7 @@ int main() {
                 customerList.push_back(Customer(customerID++, number_of_items, method_of_payment,time_of_arrival, time_of_arrival_string));
                 break;
             }
+            // User presses any key and the program exits
             default: {
                 run = false;
                 break;
@@ -144,18 +148,15 @@ int main() {
         }
     }
 
-    int size = customerList.size();
-    
-
     json list = json::array();
-    for (int i=0; i < size; i++) {
+    for (size_t i=0; i < customerList.size(); i++) {
         list.push_back(customerList[i].to_json());
     }
     ofstream file("customers.json");
     file << list.dump(2);
     file.close();
     
-    cout << "\nTotal number of customers: " << size << "\nJSON file ""customer.json"" generated successfully!!!" << endl;
+    cout << "\nTotal number of customers: " << customerList.size() << "\nJSON file ""customer.json"" generated successfully!!!" << endl;
 
     return 0;
 }
@@ -169,10 +170,10 @@ TODO:
 - Implement input-validation - DONE
 - Automate customer entry via loops - DONE
 OUTSTANDING:
-- Implement some type of sort algorithm to sort customers by time of arrival
+- Implement a sorting algorithm (most likely merge sort) to sort customers by time of arrival
 
 Note on time data-point:
-- Store will be open from 8am to 8pm. -> That is 12 hours, which is 43200 seconds
+- Store will be open from 8am to 8pm -> That is 12 hours, which is 43200 seconds
 - All time will be kept track of in seconds.
 - Seconds can be converted back into readable time for GUI
 
