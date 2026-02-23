@@ -1,37 +1,23 @@
 [
   {
     "ID": 1000,
-    "arrival_time": 3600,
-    "arrival_time_string": "9:00 AM",
-    "item_count": 3,
+    "arrival_time": 5100,
+    "arrival_time_string": "9:25 am",
+    "item_count": 9031,
     "payment_method": "CARD"
   },
   {
     "ID": 1001,
-    "arrival_time": 37800,
-    "arrival_time_string": "6:30 PM",
-    "item_count": 67,
+    "arrival_time": 26700,
+    "arrival_time_string": "3:25 PM",
+    "item_count": 21,
     "payment_method": "CHEQUE"
   },
   {
     "ID": 1002,
-    "arrival_time": 7200,
-    "arrival_time_string": "10:00",
-    "item_count": 90,
-    "payment_method": "CARD"
-  },
-  {
-    "ID": 1003,
-    "arrival_time": 22860,
-    "arrival_time_string": "2:21 PM",
-    "item_count": 3189,
-    "payment_method": "CHEQUE"
-  },
-  {
-    "ID": 1004,
-    "arrival_time": 15420,
-    "arrival_time_string": "12:17 PM",
-    "item_count": 39,
+    "arrival_time": 0,
+    "arrival_time_string": "8:00 AM",
+    "item_count": 31,
     "payment_method": "CASH"
   }
 ]
